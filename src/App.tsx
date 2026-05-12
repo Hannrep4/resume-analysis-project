@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
-import { BrowserRouter, Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 
 type Workload = 'Light' | 'Moderate' | 'Heavy' | 'Overwhelming'
 type CompanionState = 'Thriving' | 'Neutral' | 'Stressed' | 'Overwhelmed'
@@ -843,6 +843,7 @@ function AppContent() {
               </section>
             }
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </div>
       </main>
