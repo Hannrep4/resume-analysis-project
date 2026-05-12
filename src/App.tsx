@@ -235,6 +235,7 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
   const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [newAssignmentId, setNewAssignmentId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false)
   const [isAssignmentFormOpen, setIsAssignmentFormOpen] = useState(false)
@@ -309,14 +310,17 @@ function AppContent() {
         items.map((item) => (item.id === editingId ? { ...item, ...next } : item)),
       )
     } else {
+      const newId = makeId()
       setAssignments((items) => [
         ...items,
         {
-          id: makeId(),
+          id: newId,
           completed: false,
           ...next,
         },
       ])
+      setNewAssignmentId(newId)
+      setTimeout(() => setNewAssignmentId(null), 500)
     }
     resetForm()
     setIsAssignmentFormOpen(false)
@@ -495,15 +499,15 @@ function AppContent() {
                     <section className="card stats-card" aria-labelledby="stats-title">
                       <h3 id="stats-title">Assignment Stats</h3>
                       <ul className="stats-list" aria-label="Assignment progress stats">
-                        <li>
+                        <li data-stat-type="completed">
                           <span className="stat-label">Completed</span>
                           <strong className="stat-value">{assignmentStats.completed}</strong>
                         </li>
-                        <li>
+                        <li data-stat-type="duetoday">
                           <span className="stat-label">Due today</span>
                           <strong className="stat-value">{assignmentStats.dueToday}</strong>
                         </li>
-                        <li>
+                        <li data-stat-type="duelater">
                           <span className="stat-label">Due later</span>
                           <strong className="stat-value">{assignmentStats.dueLater}</strong>
                         </li>
@@ -513,7 +517,7 @@ function AppContent() {
                     <aside className="card companion-card" aria-live="polite">
                       <div className="companion-content">
                         <div className="companion-avatar" aria-hidden="true">
-                          <span className="companion-face">{PET_EXPRESSIONS[petType][companionState]}</span>
+                          <span className="companion-face" data-emoji-count={PET_EXPRESSIONS[petType][companionState].length}>{PET_EXPRESSIONS[petType][companionState]}</span>
                         </div>
                         <div className="companion-message-col">
                           <div className="companion-title-row">
@@ -604,8 +608,9 @@ function AppContent() {
                           <ul className="assignment-list" aria-label="Assignment list">
                             {filteredAssignments.map((item) => {
                               const overdue = isOverdue(item)
+                              const isNew = item.id === newAssignmentId
                               return (
-                                <li key={item.id} className="assignment-card">
+                                <li key={item.id} className={`assignment-card${isNew ? ' new-assignment' : ''}`}>
                                   <div className="assignment-main">
                                     <h4>{item.title}</h4>
                                     <p>{item.course}</p>
