@@ -1,3 +1,5 @@
+Link to site: https://hannrep4.github.io/resume-analysis-project/
+
 # Accessible Assignment Companion
 
 This project was built for IS 219 as a frontend-focused portfolio application.
